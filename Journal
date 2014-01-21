@@ -1,6 +1,7 @@
                           2014 (C) HuangJinDong
 
-  This is the journal of my project, it will be update every day.  
+  This is the journal of my project, it will be updated every day 
+  until my project is finished.  
 
 -- Mon Jan 20, 2014 
    Today I configure the git environment of project's and update 
@@ -8,4 +9,8 @@
    about shell. This project will be more interesting and difficult.
    But, I will do my best to finish it. See you tomorrow!     
 
-
+-- Tue Jan 21, 2014
+   Tonight, I learn more about shell grammer and some functions it 
+   has, such as background control and so on. I think it is better
+   to finish a simple shell. And add more functions day after day. 	
+   So, I will code at tomorrow.
