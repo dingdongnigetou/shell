@@ -1,7 +1,6 @@
                           2014 (C) HuangJinDong
 
-  This is the journal of my project, it will be updated every day 
-  until my project is finished.  
+  This is the journal of my project, it will be updated until my project is finished.  
 
 -- Mon Jan 20, 2014 
    Today I configure the git environment of project's and update 
@@ -13,4 +12,11 @@
    Tonight, I learn more about shell grammer and some functions it 
    has, such as background control and so on. I think it is better
    to finish a simple shell. And add more functions day after day. 	
-   So, I will code at tomorrow.
+   So, I will code at next time.
+
+-- Thu Jan 23, 2014
+   Since the parsing is more difficult than lexical analysis, so, I 
+   plan to implement lexical analysis first, after this, I will  
+   finish the parsing. By the way, I finish the DFA of shell command
+   tonight. I believe that everything will be interesting if I stick to.
+
