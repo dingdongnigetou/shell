@@ -14,7 +14,7 @@
 typedef enum{
 	/* will be add more */
 	START, INCOMMAND, INPARAM, INCOMMENT, DONE
-}StateTypes;
+}StateType;
 
 /* the length of the input buffer for source code lines */
 #define BUFLEN 256
@@ -22,6 +22,7 @@ typedef enum{
 static char linebuf[BUFLEN]; /* holds the current line */
 static int  linepos = 0;     /* current position in linebuf */
 static int  bufsize = 0;     /* current size of buffer string */
+char        tokenString[MAXTOKENLEN + 1]; /* extern form scan.h */
 
 /* 
  * getNextChar fetches the next non-blank character
@@ -61,32 +62,77 @@ TokenType getToken(void)
 	int tokenStringIndex = 0; /* index for storing into tokenString */
 	TokenType currentToken;   /* current token to be returned */
 	StateType state = START;  /* current state */
-        bool save;                /* save tokenString or not */
+        int save;                 /* save tokenString or not */
 	
 	while (state != DONE){
 		char ch = getNextChar();
-		save = true;
+		save = TRUE;
 		switch (state)
 		{
 		case START:
 			if (ch == '#')
 				state = INCOMMENT;
 			else if (ch == ' ' || ch == '\t')
-				save = false; /* still in START*/
-			else if (ch == '\n')
+				save = FALSE; /* still in START*/
+			/* end of stdin */
+			else if (INPUT == STDIN && ch == '\n'){
+				save  = FALSE;
 				state = DONE;
-		        else 		
-				state = INCOMMAND; /* all of other are command*/
-
-		case INCOMMAND:
-			if (ch == ' ' || ch == '\t'){
-				save = false;
+				currentToken = ENDINPUT;
+			}
+			/* end of file  */
+			else if (INPUT == AFILE && ch == EOF ){
+				save  = FALSE;
+				state = DONE;
+				currentToken = ENDINPUT;
+			}
+			/* not end until EOF */
+			else if (INPUT == AFILE && ch == '\n')
+				save = FALSE;
+			/* the begining of paramter */
+			else if (ch == '-' || ch == '--'){
+				save  = FALSE;
 				state = INPARAM;
 			}
-			else if (ch == '\n')
+		        else 		
+				state = INCOMMAND; /* all of other are command*/
+			break;
+		case INCOMMAND:
+			/* teminal characters */
+			if (ch == ' ' || ch == '\t' || ch == ';' || ch == '&' || ch == '&&' || 
+					ch == '||' || ch == '|' || ch == ')' || ch == ')'){
+				save  = FALSE;	
 				state = DONE;
-		
-		}
-	}	
+				currentToken = COMMAND;
+			}
+			break;
+		case INPARAM:
+			/* terminal characters */
+			if (ch == ' ' || ch == '\t' || ch == ';' || ch == '&' || ch == '&&' ||
+					ch == '||' || ch == '|' || ch == ')' || ch == ')'){
+				save  = FALSE;	
+				state = DONE;
+				currentToken = PARAM;
+			}
+			break;
+		case INCOMMENT:
+			save = FALSE;
+			if (ch == '\n')
+				state = START;
+			break;
+		default:
+			state = DONE; 
+			currentToken = ERROR;
+			break;
+		} /* switch */
 
+		if (save && tokenStringIndex <= MAXTOKENLEN)
+			tokenString[tokenStringIndex++] = ch;
+		if (state == DONE){
+			tokenString[tokenStringIndex] = '\0';
+		}
+
+	} /* while */	
+
+	return currentToken;
 }

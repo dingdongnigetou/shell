@@ -2,16 +2,20 @@
 ########################################################################
 
 CC=gcc
-CFLAGS += -wall
+CFLAGS += -Wall
+CFLAGS += -I$(INCLUDE) 
 
 SRC=./src
 OBJ=./obj
 INCLUDE=./include
 
-install:$(OBJ)/main.o
+install:$(OBJ)/main.o $(OBJ)/scan.o
 	$(CC) $(CFLAGS) $^ -o ddsh
 
-$(OBJ)/main.o:$(SRC)/mian.c
+$(OBJ)/scan.o:$(SRC)/scan.c $(INCLUDE)/scan.h
+	$(CC) $(CFLAGS) -c $< -o $@ 
+
+$(OBJ)/main.o:$(SRC)/main.c $(INCLUDE)/globals.h
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:
