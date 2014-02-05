@@ -1,7 +1,7 @@
 /*
- * 2014 (C) HuangJinDong
+ * (C) 2014 HuangJinDong
  *
- * scan.h
+ * include/scan.h
  *
  * The scanner interface for ddsh.
  *
@@ -18,6 +18,9 @@
 
 /* tokenString array stores the lexeme of each token */
 extern char tokenString[MAXTOKENLEN + 1];
+
+/* command's parameters */
+extern char arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 /* function getToken returns the 
  * next token in source file 

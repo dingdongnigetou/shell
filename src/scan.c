@@ -1,7 +1,7 @@
 /*
- * 2014 (C) HuangJinDong
+ * (C) 2014 HuangJinDong
  *
- * scan.c
+ * src/scan.c
  *
  * The scanner implementmtion of the ddsh.
  *
@@ -23,6 +23,7 @@ static char linebuf[BUFLEN]; /* holds the current line */
 static int  linepos = 0;     /* current position in linebuf */
 static int  bufsize = 0;     /* current size of buffer string */
 char        tokenString[MAXTOKENLEN + 1]; /* extern form scan.h */
+char        arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 /* 
  * getNextChar fetches the next non-blank character
@@ -63,7 +64,12 @@ TokenType getToken(void)
 	TokenType currentToken;   /* current token to be returned */
 	StateType state = START;  /* current state */
         int save;                 /* save tokenString or not */
-	
+	int argrow = 0;           /* for arg row */
+
+	/* for parameter tempator */
+	char temp[MAXTOKENLEN + 1];
+	int  templen = 0; 
+
 	while (state != DONE){
 		char ch = getNextChar();
 		save = TRUE;
@@ -89,10 +95,10 @@ TokenType getToken(void)
 			/* not end until EOF */
 			else if (INPUT == AFILE && ch == '\n')
 				save = FALSE;
-			/* the begining of paramter */
 			else if (ch == '-' || ch == '--'){
 				save  = FALSE;
 				state = INPARAM;
+				temp[templen++] = ch;
 			}
 		        else 		
 				state = INCOMMAND; /* all of other are command*/
@@ -105,15 +111,34 @@ TokenType getToken(void)
 				state = DONE;
 				currentToken = COMMAND;
 			}
+			else if (ch == '\n'){
+				state = DONE;
+				currentToken = COMMAND;
+				ungetNextCar();	/* return to START */
+                        }
 			break;
 		case INPARAM:
-			/* terminal characters */
-			if (ch == ' ' || ch == '\t' || ch == ';' || ch == '&' || ch == '&&' ||
-					ch == '||' || ch == '|' || ch == ')' || ch == ')'){
-				save  = FALSE;	
+			if (ch == ';' || ch == '&' || ch == '&&' || 
+				ch == '||' || ch == '|' || ch == ')' || ch == ')'){
+				save  = FALSE;
 				state = DONE;
 				currentToken = PARAM;
+			}	
+			else if (ch == '\n'){
+				state = DONE; 
+				currentToken = PARAM;
+				ungetNextCar();
+
+				temp[templen] = '\0';
+				strcpy(arg[argrow++], temp);
 			}
+			else if (ch == ' ' || ch == '\t'){
+				/* collect parameters into arg[][] */
+				temp[templen] = '\0';
+				strcpy(arg[argrow++], temp);
+			}
+			else
+				temp[templen++] = ch;
 			break;
 		case INCOMMENT:
 			save = FALSE;

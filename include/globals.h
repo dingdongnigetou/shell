@@ -1,7 +1,7 @@
 /*
- * 2014 (C) HuangJinDong
+ * (C) 2014 HuangJinDong
  *
- * globals.h
+ * include/globals.h
  *
  * global types and vars for ddsh.
  *
