@@ -20,7 +20,19 @@
 extern char tokenString[MAXTOKENLEN + 1];
 
 /* command's parameters */
-extern char arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+extern char const arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+
+/* 
+ * getNextChar fetches the next non-blank character
+ * from linebuf, reading in a new line if linebuf 
+ * is exhausted.
+ */
+extern char getNextChar(void); 
+
+/*
+ * ungetNextCar backtracks one character in linebuf
+ */
+extern void ungetNextChar(void);
 
 /* function getToken returns the 
  * next token in source file 

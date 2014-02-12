@@ -10,10 +10,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
 
 /* from scan.h */
 char tokenString[MAXTOKENLEN + 1];
-char arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+char const arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+char getNextChar(void);
+void ungetNextChar(void);
 
 /* global variables */
 FILE *source;
@@ -41,32 +44,39 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	while (1){
+	while (getNextChar() != EOF){
 		token = getToken();
+		char *arg1[] = {"ls", "-a", "-l", "/usr", (char *)0};
 
 		switch(token)
 		{
 		case COMMAND:
-			fprintf(stdout, "command\n");
+			fprintf(stdout, "%s\n", tokenString);
 			break;
 		case PARAM:
-			fprintf(stdout, *arg);
-			fprintf(stdout, "\n");
 			break;
 		case ENDINPUT:	
-			/* if stdin then wait for inputing from user */
-			if (INPUT == STDIN)
-				fprintf(stdout, "ddsh%% "); 
-			/* else end program */
-			else
-				goto END;
+			if ((pid = fork()) < 0)
+				fprintf(stderr, "fork error...");
+			else if (pid == 0)
+				execvp("ls", arg);
+			if ((pid == waitpid(pid, &status, 0)) < 0)
+				fprintf(stderr, "waitpid error...");
+
+			/* clear arg array */
+			for (int i = 0; i < MAXTOKENLEN; i++)
+				memset(arg + i, '\0', MAXTOKENLEN);
+
+			fprintf(stdout, "ddsh%% ");
+	
 			break;
 		default:
 			fprintf(stdout, "error...");
 			break;
 		}
+
 	}
 		
-END:	return 0;
+	exit(0);
 }
 

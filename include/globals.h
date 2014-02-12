@@ -30,5 +30,7 @@ extern FILE *source;  /* file to be inputed, maybe it is a file or stdin. */
 
 extern int  INPUT;    /* indicate the input is file or stdin */
 
+extern TokenType  lastToken;  /* record the last token what is it */
+
 #endif /* _GLOBALS_H_ */
 
