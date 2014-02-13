@@ -16,6 +16,9 @@
 #define STDIN 0
 #define AFILE 1
 
+/* the maximum size of a token */
+#define MAXTOKENLEN 256
+
 typedef enum{
 	/* key words */
 

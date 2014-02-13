@@ -26,8 +26,8 @@ TokenType   lastToken;
 static char linebuf[BUFLEN]; /* holds the current line */
 static int  linepos = 0;     /* current position in linebuf */
 static int  bufsize = 0;     /* current size of buffer string */
-char        tokenString[MAXTOKENLEN + 1]; /* extern form scan.h */
-char const  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+char        tokenString[MAXTOKENLEN + 1]; 
+char*       arg[MAXTOKENLEN + 1];
 
 char getNextChar(void) 
 {
@@ -76,28 +76,23 @@ TokenType getToken(void)
 				state = INCOMMENT;
 			else if (ch == ' ' || ch == '\t')
 				save = FALSE; /* still in START*/
-			/* end of stdin */
-			else if (INPUT == STDIN && ch == '\n'){
-				save  = FALSE;
-				state = DONE;
+			else if (ch == '\n'){
+				save         = FALSE;
+				state        = DONE;
+				currentToken = NEWLINE;
+				lastToken    = NEWLINE;
+			}
+			else if (ch == EOF ){
+				save         = FALSE;
+				state        = DONE;
 				currentToken = ENDINPUT;
 				lastToken    = ENDINPUT;
 			}
-			/* end of file  */
-			else if (INPUT == AFILE && ch == EOF ){
-				save  = FALSE;
-				state = DONE;
-				currentToken = ENDINPUT;
-				lastToken    = ENDINPUT;
-			}
-			/* not end until EOF */
-			else if (INPUT == AFILE && ch == '\n')
-				save  = FALSE;
 			else if (lastToken == COMMAND){
-				save  = FALSE;
-				state = INPARAM;
-				strcpy(arg[argrow++], tokenString); /* the begin of parameters */
-				temp[templen++] = ch;               /* collect parameters */
+				save            = FALSE;
+				state           = INPARAM;
+				arg[argrow++]   = tokenString; /* the begin of parameters */
+				ungetNextChar();
 			}
 		        else 		
 				state = INCOMMAND; /* all of other are command*/
@@ -124,10 +119,7 @@ TokenType getToken(void)
 				state        = DONE;
 				currentToken = PARAM;
 				lastToken    = PARAM;
-
-				temp[0] = (char *)0;
-				temp[1] = '\0';
-				strcpy(arg[argrow++], temp); /* the end of parameters */
+				arg[argrow]  = 0; /* the end of parameters */
 			}	
 			else if (ch == '\n'){
 				state        = DONE;
@@ -138,17 +130,15 @@ TokenType getToken(void)
 
 				temp[templen] = '\0';
 				templen       = 0;
-				strcpy(arg[argrow++], temp);
+				arg[argrow++] = temp;
 
-				temp[0] = (char *)0;
-				temp[1] = '\0';
-				strcpy(arg[argrow++], temp); /* the end of parameters */
+				arg[argrow]   = 0; /* the end of parameters */
 			}
 			else if (ch == ' ' || ch == '\t'){
 				/* collect parameters into arg[][] */
 				temp[templen]   = '\0';
 				templen         = 0;
-				strcpy(arg[argrow++], temp);
+				arg[argrow++]   = temp;
 			}
 			else
 				temp[templen++] = ch;
@@ -167,7 +157,7 @@ TokenType getToken(void)
 
 		if (save && tokenStringIndex <= MAXTOKENLEN)
 			tokenString[tokenStringIndex++] = ch;
-		if (state == DONE){
+		if (state == DONE && currentToken != NEWLINE && currentToken != ENDINPUT){
 			tokenString[tokenStringIndex] = '\0';
 		}
 

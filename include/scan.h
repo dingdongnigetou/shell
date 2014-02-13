@@ -20,7 +20,7 @@
 extern char tokenString[MAXTOKENLEN + 1];
 
 /* command's parameters */
-extern char const arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+extern char* arg[MAXTOKENLEN + 1];
 
 /* 
  * getNextChar fetches the next non-blank character
