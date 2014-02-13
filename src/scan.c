@@ -29,6 +29,7 @@ static int  bufsize = 0;     /* current size of buffer string */
 char        tokenString[MAXTOKENLEN + 1]; 
 char*       arg[MAXTOKENLEN + 1];
 
+/* from scan.h */
 char getNextChar(void) 
 {
 	if (!(linepos < bufsize)){
@@ -44,6 +45,7 @@ char getNextChar(void)
 		return linebuf[linepos++];
 }
 
+/* from scan.h */
 void ungetNextChar(void)
 {
 	linepos--; 
@@ -60,12 +62,12 @@ TokenType getToken(void)
 	TokenType currentToken;   /* current token to be returned */
 	StateType state = START;  /* current state */
         int save;                 /* save tokenString or not */
-	int argrow = 0;           /* for arg row */
+	int argrow = 1;           /* for arg row */
 
 	/* for parameter tempator */
 	char temp[MAXTOKENLEN + 1];
 	int  templen = 0; 
-
+	
 	while (state != DONE){
 		char ch = getNextChar();
 		save    = TRUE;
@@ -89,9 +91,9 @@ TokenType getToken(void)
 				lastToken    = ENDINPUT;
 			}
 			else if (lastToken == COMMAND){
-				save            = FALSE;
-				state           = INPARAM;
-				arg[argrow++]   = tokenString; /* the begin of parameters */
+				save         = FALSE;
+				state        = INPARAM;
+				arg[0]       = tokenString; /* the begin of parameters */
 				ungetNextChar();
 			}
 		        else 		
@@ -115,34 +117,33 @@ TokenType getToken(void)
                         }
 			break;
 		case INPARAM:
-			if (ch == ';' || ch == '&' || ch == '|' || ch == '(' || ch == ')'){
+			if (ch == ';' || ch == '&' || ch == '|' || 
+					ch == '(' || ch == ')' || ch == '\n'){
 				state        = DONE;
 				currentToken = PARAM;
 				lastToken    = PARAM;
-				arg[argrow]  = 0; /* the end of parameters */
-			}	
-			else if (ch == '\n'){
-				state        = DONE;
-				save         = FALSE;
-				currentToken = PARAM;
-				lastToken    = PARAM;
-				ungetNextChar();
-
+				/* the end of parameters */
 				temp[templen] = '\0';
 				templen       = 0;
 				arg[argrow++] = temp;
+				arg[argrow]   = 0; 		
 
-				arg[argrow]   = 0; /* the end of parameters */
-			}
+				if (ch == '\n')
+					ungetNextChar(); /* return to START */
+			}	
 			else if (ch == ' ' || ch == '\t'){
-				/* collect parameters into arg[][] */
+				/* collect parameters into arg[][]  */
 				temp[templen]   = '\0';
 				templen         = 0;
 				arg[argrow++]   = temp;
+				printf("*****%s\n", arg[1]);
+				printf("****%s\n", arg[2]);
+				/* ignore the ' ' and '\t' */
+				state = START;
 			}
 			else
 				temp[templen++] = ch;
-			save = FALSE; /* parameters save to arg array, not to tokenString */
+			save = FALSE; /* not save to tokenString */
 			break;
 		case INCOMMENT:
 			save = FALSE;
@@ -157,10 +158,11 @@ TokenType getToken(void)
 
 		if (save && tokenStringIndex <= MAXTOKENLEN)
 			tokenString[tokenStringIndex++] = ch;
-		if (state == DONE && currentToken != NEWLINE && currentToken != ENDINPUT){
+		/* currently just save command */
+		if (state == DONE && currentToken == COMMAND)
 			tokenString[tokenStringIndex] = '\0';
-		}
 
+		
 	} /* while */	
 
 	return currentToken;

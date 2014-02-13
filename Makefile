@@ -5,6 +5,7 @@ CC=gcc
 CFLAGS += -Wall
 CFLAGS += -I$(INCLUDE) 
 CFLAGS += -std=gnu99
+CFLAGS += -g
 
 SRC=./src
 OBJ=./obj
