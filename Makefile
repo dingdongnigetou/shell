@@ -21,4 +21,4 @@ $(OBJ)/main.o:$(SRC)/main.c $(INCLUDE)/globals.h
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 clean:
-	rm -f $(OBJ)/*
+	rm -f $(OBJ)/* ddsh 

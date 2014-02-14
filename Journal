@@ -33,5 +33,10 @@
    But there were some problem occur when program run. Fix them next 
    time!
 
--- WED Feb 5, 2014  
+-- FRI Feb 14, 2014  
+   It can't execute a program with parameters yet, but tonight I find 
+   that if I input lots of test comand then the shell can identify parts 
+   of parameters. This problem is pullzed me few days. At the some time, 
+   when I fight with this problem, I find out other problems and fix them. 
+   I will fix it finally!!!
    
