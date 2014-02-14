@@ -16,10 +16,6 @@
 FILE  *source;
 int   INPUT;
 
-/* from scan.h */
-char  tokenString[MAXTOKENLEN + 1];
-char* arg[MAXTOKENLEN + 1];
-
 int main(int argc, char *argv[])
 {
 	TokenType token;
@@ -44,13 +40,16 @@ int main(int argc, char *argv[])
 	}
 
 	char* a[125];
-	char  *temp={"ls"};
+	char  temp[256];
+	temp[0] = 'l';
+	temp[1] = 's';
+	temp[3] = '\0';
+	temp[4] = ' ';
+	temp[5] = '\0';
 	a[0] = temp;
-	a[1] = "-a";
-	a[2] = "-a";
+	a[1] = "";
+	a[2] = "";
 	a[3] = 0;
-	a[4] = 0;
-	a[5] = 0;
 	
 	while (token != ENDINPUT){
 		token     = getToken();
@@ -66,14 +65,14 @@ int main(int argc, char *argv[])
 		case ENDINPUT:	
 			break;
 		case NEWLINE:
-			fprintf(stdout, "%s\n", arg[1]);
-			fprintf(stdout, "%s\n", arg[2]);
+			fprintf(stdout, "*%s\n", arg[1]);
+			fprintf(stdout, "*%s\n", arg[2]);
 			/* fork a child to execute a program */	
 			if ((pid = fork()) < 0)
 				fprintf(stderr, "fork error...");
 			else if (pid == 0){
 				if (HAVEPARAM)
-					execvp(arg[0], arg);
+					execvp(tokenString, arg);
 				else
 					execlp(tokenString, tokenString, (char *)0);
 			}
