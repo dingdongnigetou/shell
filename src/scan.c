@@ -10,6 +10,7 @@
 #include "globals.h"
 #include "scan.h"
 #include <string.h>
+#include <stdlib.h>
 
 /* states in scanner DFA */
 typedef enum{
@@ -26,8 +27,8 @@ TokenType   lastToken;
 static char linebuf[BUFLEN]; /* holds the current line */
 static int  linepos = 0;     /* current position in linebuf */
 static int  bufsize = 0;     /* current size of buffer string */
-char        tokenString[MAXTOKENLEN + 1]; 
-char*       arg[MAXTOKENLEN + 1];
+char        tokenString[MAXTOKENLEN + 1];
+char        arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 /* from scan.h */
 char getNextChar(void) 
@@ -67,7 +68,7 @@ TokenType getToken(void)
 	/* for parameter tempator */
 	char temp[MAXTOKENLEN + 1];
 	int  templen = 0; 
-
+	
 	while (state != DONE){
 		char ch = getNextChar();
 		char nextch;
@@ -96,7 +97,8 @@ TokenType getToken(void)
 				if (lastToken == COMMAND){
 					save         = FALSE;
 					state        = INPARAM;
-					arg[0]       = tokenString; /* the begin of parameters */
+					for (int i = 0; tokenString[i] != '\0'; i++)
+						arg[0][i] = tokenString[i]; /* the begin of parameters */
 					ungetNextChar();
 				}
 				/* command */
@@ -128,10 +130,12 @@ TokenType getToken(void)
 				if (templen != 0){
 					temp[templen] = '\0';
 					templen       = 0;
-					arg[argrow++] = temp;
+					for (int i = 0; temp[i] != '\0'; i++)
+						arg[argrow][i] = temp[i];
+					argrow++;
 				}
-				arg[argrow] = NULL; 		
-
+				/* !!!!!!!!!! */
+				
 				if (ch == '\n')
 					ungetNextChar(); /* return to START */
 			}	
@@ -145,7 +149,9 @@ TokenType getToken(void)
 				/* collect parameters into arg[][]  */
 				temp[templen]   = '\0';
 				templen         = 0;
-				arg[argrow++] = temp;
+				for (int i = 0; temp[i] != '\0'; i++)
+					arg[argrow][i] = temp[i];
+				argrow++;
 			}
 			else
 				temp[templen++] = ch;

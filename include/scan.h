@@ -20,10 +20,9 @@
 extern char  tokenString[MAXTOKENLEN + 1];
 
 /* command's parameters */
-extern char  *arg[MAXTOKENLEN + 1];
+extern char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
-/* 
- * getNextChar fetches the next non-blank character
+/* * getNextChar fetches the next non-blank character
  * from linebuf, reading in a new line if linebuf 
  * is exhausted.
  */

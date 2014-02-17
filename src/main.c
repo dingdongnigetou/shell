@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 		INPUT  = AFILE;
 		source = fopen(argv[1], "r");
 		if (source == NULL){
-			fprintf(stderr, "File %s not found\n", argv[1]);
+	//		fprintf(stderr, "File %s not found\n", argv[1]);
 			exit(1);
 		}
 	}
@@ -75,6 +75,7 @@ void forktoexec()
 	pid_t     pid;
 	int       status;            /* child process's status */
 	int       errno;             /* from errno.h to finger out the error */
+	char      *temp[] = {"ls", "-a", "/usr", "0", "0", NULL};
 
 	/* fork a child to execute a program */	
 	if ((pid = fork()) < 0)
@@ -83,7 +84,7 @@ void forktoexec()
 		if (HAVEPARAM)
 			execvp(tokenString, arg);
 		else
-		execlp(tokenString, tokenString, (char *)0);
+			execlp(tokenString, tokenString, (char *)0);
 	}
 	/* only consider this error for simply */
 	if (errno == 2)
@@ -94,8 +95,8 @@ void forktoexec()
 	/* resume */
 	HAVEPARAM = FALSE;
 	HAVECOM   = FALSE;
-	for (int i = 0; i < MAXTOKENLEN; i++)
-		memset(arg + i, 0, MAXTOKENLEN);
+	for (int i = 0; i < MAXTOKENLEN + 1; i++)
+		memset(arg + i, 0, MAXTOKENLEN + 1);
 	memset(tokenString, 0, MAXTOKENLEN);
 }
 
