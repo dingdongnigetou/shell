@@ -97,8 +97,7 @@ TokenType getToken(void)
 				if (lastToken == COMMAND){
 					save         = FALSE;
 					state        = INPARAM;
-					for (int i = 0; tokenString[i] != '\0'; i++)
-						arg[0][i] = tokenString[i]; /* the begin of parameters */
+					strcpy(arg[0], tokenString); /* the begin of parameters */
 					ungetNextChar();
 				}
 				/* command */
@@ -130,12 +129,10 @@ TokenType getToken(void)
 				if (templen != 0){
 					temp[templen] = '\0';
 					templen       = 0;
-					for (int i = 0; temp[i] != '\0'; i++)
-						arg[argrow][i] = temp[i];
-					argrow++;
+					strcpy(arg[argrow++], temp);
 				}
-				/* !!!!!!!!!! */
-				
+				strcpy(arg[argrow], "#"); /* end character -> # */
+
 				if (ch == '\n')
 					ungetNextChar(); /* return to START */
 			}	
@@ -149,9 +146,7 @@ TokenType getToken(void)
 				/* collect parameters into arg[][]  */
 				temp[templen]   = '\0';
 				templen         = 0;
-				for (int i = 0; temp[i] != '\0'; i++)
-					arg[argrow][i] = temp[i];
-				argrow++;
+				strcpy(arg[argrow++], temp);
 			}
 			else
 				temp[templen++] = ch;

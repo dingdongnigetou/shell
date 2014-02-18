@@ -30,21 +30,20 @@ int main(int argc, char *argv[])
 	if (argc == 1){
 		INPUT  = STDIN;
 		source = stdin; 
-		fprintf(stdout, "[:)]# ");
+		fprintf(stdout, "[:-)]# ");
 	}
 	/* else from file */
 	else{
 		INPUT  = AFILE;
 		source = fopen(argv[1], "r");
 		if (source == NULL){
-	//		fprintf(stderr, "File %s not found\n", argv[1]);
+			fprintf(stderr, "File %s not found\n", argv[1]);
 			exit(1);
 		}
 	}
 
 	while (token != ENDINPUT){
 		token     = getToken();
-				
 		switch(token)
 		{
 		case COMMAND:
@@ -58,13 +57,14 @@ int main(int argc, char *argv[])
 		case NEWLINE:
 			if (HAVECOM)
 				forktoexec();
-			fprintf(stdout, "[:)]# ");
+			/* if exec command from a file then exit directly */
+			if (INPUT == STDIN)
+				fprintf(stdout, "[:-)]# ");
 			break;
 		default:
 			fprintf(stderr, "error...");
 			break;
 		}
-
 	}
 		
 	exit(0);
@@ -72,17 +72,30 @@ int main(int argc, char *argv[])
 
 void forktoexec()
 {
-	pid_t     pid;
-	int       status;            /* child process's status */
-	int       errno;             /* from errno.h to finger out the error */
-	char      *temp[] = {"ls", "-a", "/usr", "0", "0", NULL};
+	pid_t pid;
+	int   i;                          /* index */
+	int   status;                     /* child process's status */
+	int   errno;                      /* from errno.h to finger out the error */
+	char  *arg_temp[MAXTOKENLEN + 1]; /* for arg array */
 
 	/* fork a child to execute a program */	
 	if ((pid = fork()) < 0)
 		fprintf(stderr, "fork error...");
 	else if (pid == 0){
-		if (HAVEPARAM)
-			execvp(tokenString, arg);
+		if (HAVEPARAM){
+			/*
+			 * put the parameters which in arg into arg_temp 
+			 * in order to set NULL to the end of parameters.
+			 * this way maybe stupid, but it deals with the 
+			 * problem that shit me few days.:-) 
+			 *
+			 */
+			for (i = 0; strcmp(arg[i], "#") != 0; i++)
+				arg_temp[i] = arg[i];
+			arg_temp[i] = NULL;
+
+			execvp(tokenString, arg_temp);
+		}
 		else
 			execlp(tokenString, tokenString, (char *)0);
 	}
@@ -95,8 +108,5 @@ void forktoexec()
 	/* resume */
 	HAVEPARAM = FALSE;
 	HAVECOM   = FALSE;
-	for (int i = 0; i < MAXTOKENLEN + 1; i++)
-		memset(arg + i, 0, MAXTOKENLEN + 1);
-	memset(tokenString, 0, MAXTOKENLEN);
 }
 
