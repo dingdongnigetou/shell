@@ -46,3 +46,7 @@
    or files. I will add some internel commands for ddsh at the next time.
    In addition, I will implement the function of '|', ';' and so on.  
 
+-- Wed Feb 19, 2014
+   I write a general framework for build-in commands, and it works well.
+   Next time, I will implement them in detail.
+
