@@ -12,14 +12,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* the length of the input buffer for source code lines */
+#define BUFLEN 256
+
 /* states in scanner DFA */
 typedef enum{
 	/* will be add more */
 	START, INCOMMAND, INPARAM, INCOMMENT, DONE
 }StateType;
-
-/* the length of the input buffer for source code lines */
-#define BUFLEN 256
 
 /* global varibale */
 TokenType   lastToken;       

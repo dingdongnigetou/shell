@@ -7,6 +7,7 @@
 
 #include "globals.h"
 #include "scan.h"
+#include "build_in.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -55,8 +56,12 @@ int main(int argc, char *argv[])
 		case ENDINPUT:	
 			break;
 		case NEWLINE:
-			if (HAVECOM)
-				forktoexec();
+			if (isbuildin(tokenString))
+				runbuildin(isbuildin(tokenString));
+			else{
+				if (HAVECOM)
+					forktoexec();
+			}
 			/* if exec command from a file then exit directly */
 			if (INPUT == STDIN)
 				fprintf(stdout, "[:-)]# ");
