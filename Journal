@@ -4,19 +4,19 @@
 
 -- Mon Jan 20, 2014 
    Today I configure the git environment of project's and update 
-   it to GuiHub. At the same time, I also learn some konwledge 
+   it to GitHub. At the same time, I also learn some knowledge 
    about shell. This project will be more interesting and difficult.
    But, I will do my best to finish it. See you tomorrow!     
 
 -- Tue Jan 21, 2014
-   Tonight, I learn more about shell grammer and some functions it 
+   Tonight, I learn more about shell grammar and some functions it 
    has, such as background control and so on. I think it is better
    to finish a simple shell. And add more functions day after day. 	
    So, I will code at next time.
 
 -- Thu Jan 23, 2014
    Since the parsing is more difficult than lexical analysis, so, I 
-   plan to implement lexical analysis first, after this, I will  
+   plan to implement lexical analysis first, after this, I will ss
    finish the parsing. By the way, I finish the DFA of shell command
    tonight. I believe that everything will be interesting if I stick to.
 
@@ -29,24 +29,29 @@
    I code parts of DFA program. I think I should code more in one time.
 
 -- Mon Feb 3, 2014
-   I has been finished the essential DFA program and complile successfuly.
+   I has been finished the essential DFA program and compile successfully.
    But there were some problem occur when program run. Fix them next 
    time!
 
 -- FRI Feb 14, 2014  
    It can't execute a program with parameters yet, but tonight I find 
-   that if I input lots of test comand then the shell can identify parts 
-   of parameters. This problem is pullzed me few days. At the some time, 
+   that if I input lots of test command then the shell can identify parts 
+   of parameters. This problem is puzzled me few days. At the some time, 
    when I fight with this problem, I find out other problems and fix them. 
    I will fix it finally!!!
-   
+  
 -- Tue Feb 18, 2014
    Today is my lucky day. I fix that problem eventually! By some tips. You 
    can see in my program. Now, the ddsh can execute commands from stdin 
-   or files. I will add some internel commands for ddsh at the next time.
+   or files. I will add some internal commands for ddsh at the next time.
    In addition, I will implement the function of '|', ';' and so on.  
 
 -- Wed Feb 19, 2014
    I write a general framework for build-in commands, and it works well.
    Next time, I will implement them in detail.
+
+-- Thu Feb 20, 2014
+   Finish the "cd" and "pwd" and write historical commands into .history.
+   I learn that you should use fflush(stream) to write the data into file
+   when you operate a stream.
 
