@@ -14,11 +14,21 @@
 #include <errno.h>
 #include <sys/wait.h>
 
+/* fill the arg[][] with 0 */
+#define CLRARG                                \
+for (int i = 0; i <= MAXTOKENLEN; i++)        \
+	memset(arg + i, 0, MAXTOKENLEN + 1);
+
 /* global variables */
 FILE  *source;
+FILE  *history;
 int   INPUT;
-int   HAVEPARAM = FALSE; /* have parameter or not */
+char  tokenString[MAXTOKENLEN + 1];
+char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
+char  pwd[MAXTOKENLEN + 1];
+
 int   HAVECOM   = FALSE; /* have command or not */
+int   errno;             /* from errno.h to finger out the error */
 
 /* fork a new process */
 void  forktoexec();
@@ -26,12 +36,16 @@ void  forktoexec();
 int main(int argc, char *argv[])
 {
 	TokenType token;
+
+	CLRARG                             /* for initialization */
+	getcwd(pwd, MAXTOKENLEN + 1);      /* get current work director */
+	history = fopen(".history", "a"); 
 	
 	/* no file then wait for inputing from stdin */
 	if (argc == 1){
 		INPUT  = STDIN;
 		source = stdin; 
-		fprintf(stdout, "[:-)]# ");
+		fprintf(stdout, "[%s]# ", pwd);
 	}
 	/* else from file */
 	else{
@@ -42,7 +56,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 	}
-
+	
 	while (token != ENDINPUT){
 		token     = getToken();
 		switch(token)
@@ -51,20 +65,23 @@ int main(int argc, char *argv[])
 			HAVECOM = TRUE;
 			break;
 		case PARAM:
-			HAVEPARAM = TRUE;
-			break;
-		case ENDINPUT:	
 			break;
 		case NEWLINE:
-			if (isbuildin(tokenString))
-				runbuildin(isbuildin(tokenString));
-			else{
-				if (HAVECOM)
+			if (HAVECOM){
+				if (isbuildin(tokenString))
+					runbuildin(isbuildin(tokenString));
+				else
 					forktoexec();
+
+				/* resume */
+				HAVECOM = FALSE;
+				CLRARG;
 			}
 			/* if exec command from a file then exit directly */
 			if (INPUT == STDIN)
-				fprintf(stdout, "[:-)]# ");
+				fprintf(stdout, "[%s]# ", pwd);
+			break;
+		case ENDINPUT:	
 			break;
 		default:
 			fprintf(stderr, "error...");
@@ -80,14 +97,14 @@ void forktoexec()
 	pid_t pid;
 	int   i;                          /* index */
 	int   status;                     /* child process's status */
-	int   errno;                      /* from errno.h to finger out the error */
 	char  *arg_temp[MAXTOKENLEN + 1]; /* for arg array */
 
 	/* fork a child to execute a program */	
 	if ((pid = fork()) < 0)
 		fprintf(stderr, "fork error...");
 	else if (pid == 0){
-		if (HAVEPARAM){
+		/* have parameter */
+		if (arg[1][0] != 0){
 			/*
 			 * put the parameters which in arg into arg_temp 
 			 * in order to set NULL to the end of parameters.
@@ -101,17 +118,17 @@ void forktoexec()
 
 			execvp(tokenString, arg_temp);
 		}
-		else
+		else{
 			execlp(tokenString, tokenString, (char *)0);
+		}
 	}
 	/* only consider this error for simply */
-	if (errno == 2)
+	if (errno == ENOENT){
 		fprintf(stdout, "ddsh: %s: command not found\n", tokenString);
-	/* waitting for child to exit */
+		errno = 0; /* resume */
+	}
+	/* waiting for child to exit */
 	if ((pid == waitpid(pid, &status, 0)) < 0)
 		fprintf(stderr, "waitpid error...");
-	/* resume */
-	HAVEPARAM = FALSE;
-	HAVECOM   = FALSE;
 }
 

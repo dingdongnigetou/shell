@@ -3,7 +3,7 @@
  *
  * src/scan.c
  *
- * The scanner implementmtion of the ddsh.
+ * The scanner implementation of the ddsh.
  *
  */
 
@@ -21,20 +21,23 @@ typedef enum{
 	START, INCOMMAND, INPARAM, INCOMMENT, DONE
 }StateType;
 
-/* global varibale */
+/* global variable */
 TokenType   lastToken;       
 
 static char linebuf[BUFLEN]; /* holds the current line */
 static int  linepos = 0;     /* current position in linebuf */
 static int  bufsize = 0;     /* current size of buffer string */
-char        tokenString[MAXTOKENLEN + 1];
-char        arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 /* from scan.h */
 char getNextChar(void) 
 {
 	if (!(linepos < bufsize)){
 		if(fgets(linebuf, BUFLEN - 1, source)){
+			/* record every command from stdin */
+			if (INPUT == STDIN){
+				fputs(linebuf, history);
+				fflush(history); /* flush for write data to file */
+			}
 			bufsize = strlen(linebuf);
 			linepos = 0;
 			return linebuf[linepos++];
@@ -65,13 +68,13 @@ TokenType getToken(void)
         int save;                 /* save tokenString or not */
 	int argrow = 1;           /* for arg row */
 
-	/* for parameter tempator */
+	/* for parameter tempter */
 	char temp[MAXTOKENLEN + 1];
 	int  templen = 0; 
 	
 	while (state != DONE){
-		char ch = getNextChar();
 		char nextch;
+		char ch = getNextChar();
 		save    = TRUE;
 		switch (state)
 		{
@@ -106,7 +109,7 @@ TokenType getToken(void)
 			}
 			break;
 		case INCOMMAND:
-			/* teminal characters */
+			/* terminal characters */
 			if (ch == ' ' || ch == '\t' || ch == ';' || ch == '&' || 
 					ch == '|' || ch == ')' || ch == ')' || ch == '\n'){
 				save  = FALSE;	
@@ -119,7 +122,7 @@ TokenType getToken(void)
 			}
 			break;
 		case INPARAM:
-			/* teminal characters */
+			/* terminal characters */
 			if (ch == ';' || ch == '&' || ch == '|' || 
 					ch == '(' || ch == ')' || ch == '\n'){
 				state         = DONE;

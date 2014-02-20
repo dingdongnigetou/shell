@@ -14,13 +14,13 @@ INCLUDE=./include
 install:$(OBJ)/main.o $(OBJ)/scan.o $(OBJ)/build_in.o
 	$(CC) $(CFLAGS) $^ -o ddsh
 
-$(OBJ)/scan.o:$(SRC)/scan.c $(INCLUDE)/scan.h
+$(OBJ)/scan.o:$(SRC)/scan.c 
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
-$(OBJ)/main.o:$(SRC)/main.c $(INCLUDE)/globals.h
+$(OBJ)/main.o:$(SRC)/main.c
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
-$(OBJ)/build_in.o:$(SRC)/build_in.c $(INCLUDE)/build_in.h
+$(OBJ)/build_in.o:$(SRC)/build_in.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

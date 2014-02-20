@@ -5,8 +5,11 @@
  *
  */
 
+#include "globals.h"
 #include "build_in.h"
 #include <string.h>
+#include <unistd.h>
+#include <errno.h>
 
 int isbuildin(char *command)
 {
@@ -40,14 +43,29 @@ void runbuildin(int buildin)
 		case HISTORY:
 			do_history();
 			break;
-		case NO:break; /* nothing */
+		case NO:/* nothing */
 		default:break;	
 	}
 }
 
 void do_cd()
 {
-	fprintf(stdout, "cd\n");
+	/* change to the arg[1] always */
+	if (arg[1][0] != 0){
+		if (!chdir(arg[1]))
+			strcpy(pwd, arg[1]); /* update the current work director */
+		else{
+			/* error process, errno define at src/main.c */
+			if (errno == ENOENT){
+				fprintf(stdout, "ddsh: cd: %s: No such file or directory\n", arg[1]);
+				errno = 0; /* resume */
+			}
+			else if (errno == ENOTDIR){
+				fprintf(stdout, "ddsh: cd: %s: Not a directory\n", arg[1]);
+				errno = 0;
+			}
+		}
+	}
 }
 
 void do_exit()
@@ -57,7 +75,7 @@ void do_exit()
 
 void do_pwd()
 {
-	fprintf(stdout, "pwd\n");
+	fprintf(stdout, "%s\n", pwd);
 }
 
 void do_history()

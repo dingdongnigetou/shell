@@ -1,6 +1,5 @@
 # This a test file
 
-
 echo "Hello ddsh!!!"
 ls -al /usr
 head /etc/passwd -n 10
