@@ -7,6 +7,7 @@
 
 #include "globals.h"
 #include "build_in.h"
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
@@ -70,7 +71,7 @@ void do_cd()
 
 void do_exit()
 {
-	fprintf(stdout, "exit\n");
+	exit(atoi(arg[1])); /* exit number from arg[1] */
 }
 
 void do_pwd()
@@ -80,6 +81,13 @@ void do_pwd()
 
 void do_history()
 {
-	fprintf(stdout, "history\n");
+	int  row = 1; /* line number */
+	char temp[MAXTOKENLEN + 1];
+	FILE *history = fopen(".history", "r");
+	while (fgets(temp, MAXTOKENLEN + 1, history) != NULL){
+		fprintf(stdout, "%d %s", row, temp);
+		row++;
+	}
+	fclose(history);
 }
 

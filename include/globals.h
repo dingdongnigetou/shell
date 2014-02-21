@@ -20,7 +20,7 @@
 #define FALSE 0
 
 /* the maximum size of a token */
-#define MAXTOKENLEN 256
+#define MAXTOKENLEN 1024 
 
 typedef enum{
 	/* key words */
@@ -36,7 +36,6 @@ extern char  tokenString[MAXTOKENLEN + 1];          /* tokenString array stores 
 extern char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1]; /* command's parameters */
 extern char  pwd[MAXTOKENLEN + 1];                  /* present work director */
 
-extern FILE       *history;   /* point to .history which contains historical commands */
 extern FILE       *source;    /* file to be inputed, maybe it is a file or stdin. */
 extern int        INPUT;      /* indicate the input is file or stdin */
 extern TokenType  lastToken;  /* record the last token what is it */

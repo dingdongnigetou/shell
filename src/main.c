@@ -21,7 +21,6 @@ for (int i = 0; i <= MAXTOKENLEN; i++)        \
 
 /* global variables */
 FILE  *source;
-FILE  *history;
 int   INPUT;
 char  tokenString[MAXTOKENLEN + 1];
 char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
@@ -39,13 +38,12 @@ int main(int argc, char *argv[])
 
 	CLRARG                             /* for initialization */
 	getcwd(pwd, MAXTOKENLEN + 1);      /* get current work director */
-	history = fopen(".history", "a"); 
-	
+		
 	/* no file then wait for inputing from stdin */
 	if (argc == 1){
 		INPUT  = STDIN;
 		source = stdin; 
-		fprintf(stdout, "[%s]# ", pwd);
+		fprintf(stdout, "[dingdong %s]# ", strrchr(pwd, '/') + 1);
 	}
 	/* else from file */
 	else{
@@ -79,7 +77,7 @@ int main(int argc, char *argv[])
 			}
 			/* if exec command from a file then exit directly */
 			if (INPUT == STDIN)
-				fprintf(stdout, "[%s]# ", pwd);
+				fprintf(stdout, "[dingdong %s]# ", strrchr(pwd, '/') + 1);
 			break;
 		case ENDINPUT:	
 			break;

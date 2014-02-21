@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 /* the length of the input buffer for source code lines */
-#define BUFLEN 256
+#define BUFLEN 1024
 
 /* states in scanner DFA */
 typedef enum{
@@ -35,8 +35,10 @@ char getNextChar(void)
 		if(fgets(linebuf, BUFLEN - 1, source)){
 			/* record every command from stdin */
 			if (INPUT == STDIN){
+				FILE *history = fopen(".history", "a"); 
 				fputs(linebuf, history);
 				fflush(history); /* flush for write data to file */
+				fclose(history);
 			}
 			bufsize = strlen(linebuf);
 			linepos = 0;

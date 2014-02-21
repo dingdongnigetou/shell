@@ -10,9 +10,6 @@
 #ifndef _SCAN_H_
 #define _SCAN_H_
 
-/* the maximum size of a token */
-#define MAXTOKENLEN 256
-
 /* * getNextChar fetches the next non-blank character
  * from linebuf, reading in a new line if linebuf 
  * is exhausted.
