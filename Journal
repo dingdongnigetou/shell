@@ -55,3 +55,7 @@
    I learn that you should use fflush(stream) to write the data into file
    when you operate a stream.
 
+-- Fri Feb 21, 2014
+   Finish the code of build-in command. Next time will complete the key 
+   processor(e: up, down, left, right) and the cursor processor.
+
