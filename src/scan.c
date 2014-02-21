@@ -9,6 +9,7 @@
 
 #include "globals.h"
 #include "scan.h"
+#include "keyprocess.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -77,6 +78,9 @@ TokenType getToken(void)
 	while (state != DONE){
 		char nextch;
 		char ch = getNextChar();
+
+		keyprocess(ch);
+
 		save    = TRUE;
 		switch (state)
 		{
