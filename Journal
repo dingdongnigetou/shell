@@ -59,3 +59,8 @@
    Finish the code of build-in command. Next time will complete the key 
    processor(e: up, down, left, right) and the cursor processor.
 
+-- Sun Feb 23, 2014
+   The key process is so difficult. Now, it only can identify which one
+   is up or down or left or right. Fight!
+
+
