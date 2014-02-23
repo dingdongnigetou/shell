@@ -10,5 +10,5 @@
 #include <stdio.h>
 
 /* deal with the key */
-void keyprocess(char ch);
+int keyprocess();
 

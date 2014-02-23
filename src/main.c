@@ -6,6 +6,7 @@
  */
 
 #include "globals.h"
+#include "keyprocess.h"
 #include "scan.h"
 #include "build_in.h"
 #include <stdlib.h>
@@ -34,6 +35,7 @@ void  forktoexec();
 
 int main(int argc, char *argv[])
 {
+
 	TokenType token;
 
 	CLRARG                             /* for initialization */
@@ -44,6 +46,7 @@ int main(int argc, char *argv[])
 		INPUT  = STDIN;
 		source = stdin; 
 		fprintf(stdout, "[dingdong %s]# ", strrchr(pwd, '/') + 1);
+		fflush(stdout);
 	}
 	/* else from file */
 	else{
@@ -54,7 +57,9 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 	}
-	
+
+	keyprocess();
+
 	while (token != ENDINPUT){
 		token     = getToken();
 		switch(token)
