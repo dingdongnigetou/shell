@@ -22,6 +22,9 @@ main (void)
 		  return 1;
 	  }
 
+	int color = 34;
+	printf("\033[1;%dmHello,world.\033[0m\n",color);
+
 	while(1){
 		ch = getchar();
 		if (ch == 65){

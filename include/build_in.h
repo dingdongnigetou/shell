@@ -7,6 +7,9 @@
  * 
  */
 
+#ifndef _BUILDIN_
+#define _BUILDIN_
+
 #include <stdio.h>
 
 /* which build in command, NO -> not build in */
@@ -35,4 +38,6 @@ void do_exit();
 
 /* read .history which contains historical commands */
 void do_history();
+
+#endif /* _BUILDIN_ */
 

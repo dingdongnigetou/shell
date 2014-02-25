@@ -9,7 +9,7 @@
 
 #include "globals.h"
 #include "scan.h"
-#include "keyprocess.h"
+#include "readprocess.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -25,31 +25,31 @@ typedef enum{
 /* global variable */
 TokenType   lastToken;       
 
-static char linebuf[BUFLEN]; /* holds the current line */
-static int  linepos = 0;     /* current position in linebuf */
-static int  bufsize = 0;     /* current size of buffer string */
+static char start[1] = {'\0'}; 
+static char *linebuf = start;  /* holds the current line which from readline that end of '\0' */
+static int  linepos  = 1;     /* current position in linebuf */
 
 /* from scan.h */
 char getNextChar(void) 
 {
-	if (!(linepos < bufsize)){
-		if(fgets(linebuf, BUFLEN - 1, source)){
+	if (*(linebuf + (linepos - 1)) == '\0'){
+		if( (linebuf = rl_gets()) != NULL){
 			/* record every command from stdin */
 			if (INPUT == STDIN){
 				FILE *history = fopen(".history", "a"); 
 				fputs(linebuf, history);
+				fputc('\n', history);
 				fflush(history); /* flush for write data to file */
 				fclose(history);
 			}
-			bufsize = strlen(linebuf);
 			linepos = 0;
-			return linebuf[linepos++];
+			return *(linebuf + linepos++);
 		}
 		else
 			return EOF;
 	}
 	else
-		return linebuf[linepos++];
+		return *(linebuf + linepos++);
 }
 
 /* from scan.h */
@@ -65,9 +65,9 @@ void ungetNextChar(void)
  */
 TokenType getToken(void)
 {
-	int tokenStringIndex = 0; /* index for storing into tokenString */
 	TokenType currentToken;   /* current token to be returned */
 	StateType state = START;  /* current state */
+	int tokenStringIndex = 0; /* index for storing into tokenString */
         int save;                 /* save tokenString or not */
 	int argrow = 1;           /* for arg row */
 
@@ -79,17 +79,16 @@ TokenType getToken(void)
 		char nextch;
 		char ch = getNextChar();
 
-		keyprocess(ch);
-
 		save    = TRUE;
 		switch (state)
 		{
 		case START:
 			if (ch == '#')
 				state = INCOMMENT;
-			else if (ch == ' ' || ch == '\t')
+			else if (ch == ' ' || ch == '\t'){
 				save = FALSE; /* still in START*/
-			else if (ch == '\n'){
+			}
+			else if (ch == '\0'){
 				save         = FALSE;
 				state        = DONE;
 				currentToken = NEWLINE;
@@ -117,20 +116,20 @@ TokenType getToken(void)
 		case INCOMMAND:
 			/* terminal characters */
 			if (ch == ' ' || ch == '\t' || ch == ';' || ch == '&' || 
-					ch == '|' || ch == ')' || ch == ')' || ch == '\n'){
+					ch == '|' || ch == ')' || ch == ')' || ch == '\0'){
 				save  = FALSE;	
 				state = DONE;
 				currentToken = COMMAND;
 				lastToken    = COMMAND;
 
-				if (ch == '\n')
+				if (ch == '\0')
 					ungetNextChar(); /* return to START */
 			}
 			break;
 		case INPARAM:
 			/* terminal characters */
 			if (ch == ';' || ch == '&' || ch == '|' || 
-					ch == '(' || ch == ')' || ch == '\n'){
+					ch == '(' || ch == ')' || ch == '\0'){
 				state         = DONE;
 				currentToken  = PARAM;
 				lastToken     = PARAM;
@@ -142,7 +141,7 @@ TokenType getToken(void)
 				}
 				strcpy(arg[argrow], "#"); /* end character -> # */
 
-				if (ch == '\n')
+				if (ch == '\0')
 					ungetNextChar(); /* return to START */
 			}	
 			else if (ch == ' ' || ch == '\t'){
@@ -163,7 +162,7 @@ TokenType getToken(void)
 			break;
 		case INCOMMENT:
 			save = FALSE;
-			if (ch == '\n')
+			if (ch == '\0')
 				state = START;
 			break;
 		default:
@@ -182,3 +181,4 @@ TokenType getToken(void)
 
 	return currentToken;
 }
+

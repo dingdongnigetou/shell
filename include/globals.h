@@ -28,7 +28,7 @@ typedef enum{
 	/* multi character words */
 	ID, NUM,
 	/* special symbols */
-        ASSIGN, SEMI, PIPE, DAEMON, OR, AND, NEWLINE, LPAREN, RPAREN,
+        ASSIGN, SEMI, PIPE, DAEMON, OR, AND, RPAREM, LPAREN, NEWLINE,
 	ENDINPUT, COMMAND, ERROR, PARAM 
 }TokenType;
 
