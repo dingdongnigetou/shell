@@ -56,7 +56,7 @@ void do_cd()
 		if (!chdir(arg[1]))
 			strcpy(pwd, arg[1]); /* update the current work director */
 		else{
-			/* error process, errno define at src/main.c */
+			/* error process */
 			if (errno == ENOENT){
 				fprintf(stdout, "ddsh: cd: %s: No such file or directory\n", arg[1]);
 				errno = 0; /* resume */

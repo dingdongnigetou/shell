@@ -10,9 +10,9 @@
 
 #include "exec.h"
 #include "globals.h"
+#include "errorprocess.h"
 #include <stdio.h>
 #include <unistd.h>
-#include <errno.h>
 #include <string.h>
 #include <sys/wait.h>
 
@@ -46,11 +46,10 @@ void forktoexec()
 			execlp(tokenString, tokenString, (char *)0);
 		}
 	}
-	/* only consider this error for simply */
-	if (errno == ENOENT){
-		fprintf(stdout, "ddsh: %s: command not found\n", tokenString);
-		errno = 0; /* resume */
-	}
+
+	/* error process */
+	error_process();
+
 	/* waiting for child to exit */
 	if ((pid == waitpid(pid, &status, 0)) < 0)
 		fprintf(stderr, "waitpid error...");

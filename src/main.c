@@ -9,10 +9,10 @@
 #include "scan.h"
 #include "build_in.h"
 #include "exec.h"
+#include "readprocess.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
 
 /* fill the arg[][] with 0 */
 #define CLRARG                                \
@@ -27,7 +27,6 @@ char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 char  pwd[MAXTOKENLEN + 1];
 
 int   HAVECOM   = FALSE; /* have command or not */
-int   errno;             /* from errno.h to finger out the error */
 
 int main(int argc, char *argv[])
 {
@@ -35,6 +34,7 @@ int main(int argc, char *argv[])
 
 	CLRARG                             /* for initialization */
 	getcwd(pwd, MAXTOKENLEN + 1);      /* get current work director */
+	initialize_readline();             /* readline initialization */
 		
 	/* no file then wait for inputing from stdin */
 	if (argc == 1){
@@ -82,5 +82,4 @@ int main(int argc, char *argv[])
 		
 	exit(0);
 }
-
 
