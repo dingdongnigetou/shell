@@ -65,7 +65,7 @@
 
 -- Thu Feb 25, 2014
    OK, I use readline instead of keyprocess because the readline is more
-   simply and powerful. I implement the TAB and UP and DOWN. But, the tab
-   only can polishing the file and directory but the command, I will finish
-   it next time.
+   simply and powerful. I implement the TAB and UP and DOWN and LEFT and 
+   RIGHT. But, the tab only can polishing the file and directory but the 
+   command, I will finish it next time.
 
