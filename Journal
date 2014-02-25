@@ -69,3 +69,9 @@
    RIGHT. But, the tab only can polishing the file and directory but the 
    command, I will finish it next time.
 
+-- Thu Feb 25, 2014
+   Tonight, I finish the auto-completion of command and write an error
+   processor for execute command. Next time, I will begin to code the 
+   parse of ddsh. It is the most difficult.
+
+
