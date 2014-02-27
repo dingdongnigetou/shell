@@ -13,7 +13,8 @@ OBJ=./obj
 INCLUDE=./include
 
 install:$(OBJ)/main.o $(OBJ)/scan.o $(OBJ)/build_in.o \
-	$(OBJ)/readprocess.o $(OBJ)/exec.o $(OBJ)/errorprocess.o
+	$(OBJ)/readprocess.o $(OBJ)/exec.o $(OBJ)/errorprocess.o \
+	$(OBJ)/parse.o
 	$(CC) $(CFLAGS) $^ -o ddsh
 
 $(OBJ)/scan.o:$(SRC)/scan.c 
@@ -32,6 +33,9 @@ $(OBJ)/exec.o:$(SRC)/exec.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ)/errorprocess.o:$(SRC)/errorprocess.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ)/parse.o:$(SRC)/parse.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef _ERRORPROCESS_
-#define _ERRORPROCESS_
+#ifndef _ERRORPROCESS_H_
+#define _ERRORPROCESS_H_
 
 /*
  * print corresponding error message when 
@@ -18,6 +18,6 @@
  */
 void error_process();
 
-#endif  /* _ERRORPROCESS_ */
+#endif  /* _ERRORPROCESS_H_ */
 
 

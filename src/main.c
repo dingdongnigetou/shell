@@ -6,33 +6,18 @@
  */
 
 #include "globals.h"
-#include "scan.h"
-#include "build_in.h"
-#include "exec.h"
 #include "readprocess.h"
+#include "parse.h"
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-
-/* fill the arg[][] with 0 */
-#define CLRARG                                \
-for (int i = 0; i <= MAXTOKENLEN; i++)        \
-	memset(arg + i, 0, MAXTOKENLEN + 1);
 
 /* global variables */
 FILE  *source;
 int   INPUT;
-char  tokenString[MAXTOKENLEN + 1];
-char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 char  pwd[MAXTOKENLEN + 1];
-
-int   HAVECOM   = FALSE; /* have command or not */
 
 int main(int argc, char *argv[])
 {
-	TokenType token;
-
-	CLRARG                             /* for initialization */
 	getcwd(pwd, MAXTOKENLEN + 1);      /* get current work director */
 	initialize_readline();             /* readline initialization */
 		
@@ -51,34 +36,8 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	while (token != ENDINPUT){
-		token     = getToken();
-		switch(token)
-		{
-		case COMMAND:
-			HAVECOM = TRUE;
-			break;
-		case PARAM:
-			break;
-		case NEWLINE:
-			if (HAVECOM){
-				if (isbuildin(tokenString))
-					runbuildin(isbuildin(tokenString));
-				else
-					forktoexec();
-
-				/* resume */
-				HAVECOM = FALSE;
-				CLRARG;
-			}
-			break;
-		case ENDINPUT:	
-			break;
-		default:
-			fprintf(stderr, "error...\n");
-			break;
-		}
-	}
+	/* begin to parse */
+	parse();
 		
 	exit(0);
 }

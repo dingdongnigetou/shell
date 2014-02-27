@@ -12,6 +12,23 @@
 #include <unistd.h>
 #include <errno.h>
 
+/* which build in command, NO -> not build in */
+typedef enum{
+	NO, CD, PWD, EXIT, HISTORY 
+}BuildInCommand;
+
+/* toggle current directory */
+void do_cd();
+
+/* display current directory */
+void do_pwd();
+
+/* exit current shell with exit number */
+void do_exit();
+
+/* read .history which contains historical commands */
+void do_history();
+
 int isbuildin(char *command)
 {
 	BuildInCommand buildin = NO;

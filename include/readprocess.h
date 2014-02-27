@@ -7,10 +7,8 @@
  *
  */
 
-#ifndef _READPROCESS_
-#define _READPROCESS_
-
-#include <stdio.h>
+#ifndef _READPROCESS_H_
+#define _READPROCESS_H_
 
 /* from the readline, we rewrite it */
 char *rl_gets();
@@ -20,5 +18,5 @@ char **command_completion(const char *text, int start, int end);
 /* initialize readline */
 void initialize_readline();
 
-#endif /* _READPROCESS_ */
+#endif /* _READPROCESS_H_ */
 

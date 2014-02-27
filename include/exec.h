@@ -7,11 +7,11 @@
  * 
  */
 
-#ifndef _EXEC_
-#define _EXEC_
+#ifndef _EXEC_H_
+#define _EXEC_H_
 
 /* fork a new process and execute it */
 void forktoexec();
 
-#endif  /* _EXEC_ */
+#endif  /* _EXEC_H_ */
 
