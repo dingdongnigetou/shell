@@ -1,10 +1,11 @@
 /*
  *
- * (C) 2014 HuangJinDong 
- *
  * include/errorprocess.h 
  *
- *  *
+ * (C) 2014 HuangJinDong 
+ *
+ * The error processor interface of the ddsh.
+ *
  */
 
 #ifndef _ERRORPROCESS_

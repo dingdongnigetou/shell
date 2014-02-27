@@ -1,8 +1,8 @@
 /*
  * (C) 2014 HuangJinDong
- * 
- * src/errorprocess.c
  *
+ * src/errorprocess.c
+ * 
  */
 
 #include "errorprocess.h"
@@ -34,7 +34,7 @@ void error_process()
 		    break;
 	case ENODEV:fprintf(stderr, "ddsh: No such device\n");
 		    break;
-	case ENOENT:fprintf(stderr, "ddsh: %s: No such file or directory\n", tokenString);
+	case ENOENT:fprintf(stderr, "ddsh: %s: command not found\n", tokenString);
 		    break;
 	}
 

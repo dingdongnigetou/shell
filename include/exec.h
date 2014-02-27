@@ -3,6 +3,8 @@
  *
  * include/exec.h 
  *
+ * The forktoexec interface of the ddsh.
+ * 
  */
 
 #ifndef _EXEC_

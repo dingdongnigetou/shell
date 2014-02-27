@@ -3,7 +3,7 @@
  *
  * (C) 2014 HuangJinDong
  *
- * use the readline 
+ * The readline interface of the ddsh.
  *
  */
 
