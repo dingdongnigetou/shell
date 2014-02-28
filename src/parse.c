@@ -22,4 +22,7 @@ char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 static TokenType token;        /* holds current token */
 
+void parse()
+{
 
+}
