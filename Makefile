@@ -17,10 +17,11 @@ install:$(OBJ)/main.o $(OBJ)/scan.o $(OBJ)/build_in.o \
 	$(OBJ)/parse.o
 	$(CC) $(CFLAGS) $^ -o ddsh
 
-$(OBJ)/scan.o:$(SRC)/scan.c 
+$(OBJ)/main.o:$(SRC)/main.c
+	mkdir -p obj
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
-$(OBJ)/main.o:$(SRC)/main.c
+$(OBJ)/scan.o:$(SRC)/scan.c 
 	$(CC) $(CFLAGS) -c $< -o $@ 
 
 $(OBJ)/build_in.o:$(SRC)/build_in.c
