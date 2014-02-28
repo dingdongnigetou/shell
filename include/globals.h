@@ -23,13 +23,13 @@
 #define MAXTOKENLEN 1024 
 
 typedef enum{
-	/* key words */
-
 	/* multi character words */
 	ID, NUM,
 	/* special symbols */
-        ASSIGN, SEMI, PIPE, DAEMON, OR, AND, RPAREM, LPAREN, NEWLINE,
-	ENDINPUT, COMMAND, ERROR, PARAM 
+        ASSIGN, SEMI, PIPE, DAEMON, OR, AND, RPAREN, LPAREN, NEWLINE,
+	ENDFILE, COMMAND, ERROR, PARAM, 
+	/* key words */
+	IF, THEN, ELSE, FI, WHILE, DO, DONEWHILE	
 }TokenType;
 
 extern char  tokenString[MAXTOKENLEN + 1];          /* tokenString array stores the lexeme of each token */
@@ -38,7 +38,6 @@ extern char  pwd[MAXTOKENLEN + 1];                  /* present work director */
 
 extern FILE       *source;    /* file to be inputed, maybe it is a file or stdin. */
 extern int        INPUT;      /* indicate the input is file or stdin */
-extern TokenType  lastToken;  /* record the last token what is it */
 
 #endif /* _GLOBALS_H_ */
 

@@ -12,6 +12,7 @@
 #include "readprocess.h"
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 /* the length of the input buffer for source code lines */
 #define BUFLEN 1024
@@ -19,17 +20,21 @@
 /* states in scanner DFA */
 typedef enum{
 	/* will be add more */
-	START, INCOMMAND, INPARAM, INCOMMENT, DONE
+	START, INCOMMAND, INPARAM, INCOMMENT, INNUM, DONE
 }StateType;
 
-/* global variable */
-TokenType   lastToken;       
+TokenType   currentToken;   /* current token to be returned */
 
 static char start[1] = {'\0'}; 
 static char *linebuf = start;  /* holds the current line which from readline that end of '\0' */
 static int  linepos  = 1;     /* current position in linebuf */
 
-/* from scan.h */
+/* 
+ * getNextChar fetches the next non-blank character
+ * from linebuf, reading in a new line if linebuf 
+ * is exhausted.
+ *
+ */
 char getNextChar(void) 
 {
 	if (*(linebuf + (linepos - 1)) == '\0'){
@@ -52,10 +57,31 @@ char getNextChar(void)
 		return *(linebuf + linepos++);
 }
 
-/* from scan.h */
+/*
+ * ungetNextCar backtracks one character in linebuf
+ *
+ */
 void ungetNextChar(void)
 {
 	linepos--; 
+}
+
+/* lookup table of key words */
+static struct{
+	char *str;
+	TokenType tok;
+}keywords[7] = { {"if", IF}, {"then", THEN}, {"else", ELSE},
+		  {"fi", FI}, {"while", WHILE}, {"do", DO},
+		  {"done", DONE}
+		};
+
+/* lookup the key words */
+static TokenType keywordLookup(char *s)
+{
+	for (int i = 0; i < 7; i++)
+		if (!strcmp(s, keywords[i].str))
+			return keywords[i].tok;
+	return COMMAND;
 }
 
 /*
@@ -65,7 +91,6 @@ void ungetNextChar(void)
  */
 TokenType getToken(void)
 {
-	TokenType currentToken;   /* current token to be returned */
 	StateType state = START;  /* current state */
 	int tokenStringIndex = 0; /* index for storing into tokenString */
         int save;                 /* save tokenString or not */
@@ -83,8 +108,27 @@ TokenType getToken(void)
 		switch (state)
 		{
 		case START:
-			if (ch == '#')
+			if (ch == '#'){
+				save  = FALSE;
 				state = INCOMMENT;
+			}
+			else if (isdigit(ch))
+				state = INNUM;
+			else if (ch == '['){
+				save         = FALSE;
+				state        = DONE;
+				currentToken = LPAREN;
+			}
+			else if (ch == ']'){
+				save         = FALSE;
+				state        = DONE;
+				currentToken = RPAREN;
+			}
+			else if (ch == ';'){
+				save         = FALSE;
+				state        = DONE;
+				currentToken = SEMI;
+			}
 			else if (ch == ' ' || ch == '\t'){
 				save = FALSE; /* still in START*/
 			}
@@ -92,17 +136,16 @@ TokenType getToken(void)
 				save         = FALSE;
 				state        = DONE;
 				currentToken = NEWLINE;
-				lastToken    = NEWLINE;
 			}
 			else if (ch == EOF ){
 				save         = FALSE;
 				state        = DONE;
-				currentToken = ENDINPUT;
-				lastToken    = ENDINPUT;
+				currentToken = ENDFILE;
 			}
 		        else{ 		
 				/* parameters */
-				if (lastToken == COMMAND){
+				if (currentToken == COMMAND){
+					printf("hello\n");
 					save         = FALSE;
 					state        = INPARAM;
 					strcpy(arg[0], tokenString); /* the begin of parameters */
@@ -120,9 +163,8 @@ TokenType getToken(void)
 				save  = FALSE;	
 				state = DONE;
 				currentToken = COMMAND;
-				lastToken    = COMMAND;
 
-				if (ch == '\0')
+				if (ch == '\0' || ch == ';')
 					ungetNextChar(); /* return to START */
 			}
 			break;
@@ -132,7 +174,6 @@ TokenType getToken(void)
 					ch == '(' || ch == ')' || ch == '\0'){
 				state         = DONE;
 				currentToken  = PARAM;
-				lastToken     = PARAM;
 				/* the end of parameters */
 				if (templen != 0){
 					temp[templen] = '\0';
@@ -141,7 +182,7 @@ TokenType getToken(void)
 				}
 				strcpy(arg[argrow], "#"); /* end character -> # */
 
-				if (ch == '\0')
+				if (ch == '\0' || ch == ';')
 					ungetNextChar(); /* return to START */
 			}	
 			else if (ch == ' ' || ch == '\t'){
@@ -165,6 +206,14 @@ TokenType getToken(void)
 			if (ch == '\0')
 				state = START;
 			break;
+		case INNUM:
+			if (!isdigit(ch)){
+				save         = FALSE;
+				state        = DONE;
+				currentToken = NUM;
+				ungetNextChar();
+			}
+			break;
 		default:
 			state = DONE; 
 			currentToken = ERROR;
@@ -173,9 +222,11 @@ TokenType getToken(void)
 
 		if (save && tokenStringIndex <= MAXTOKENLEN)
 			tokenString[tokenStringIndex++] = ch;
-		/* currently just save command */
-		if (state == DONE && currentToken == COMMAND)
+		if (state == DONE && (currentToken == COMMAND || currentToken == NUM) ){
 			tokenString[tokenStringIndex] = '\0';
+			if (currentToken == COMMAND)
+				currentToken = keywordLookup(tokenString);
+		}
 		
 	} /* while */	
 

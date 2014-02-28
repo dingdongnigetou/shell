@@ -22,7 +22,40 @@ char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 static TokenType token;        /* holds current token */
 
+/* prototypes */
+static void stmt_sequence();
+static void statement();
+static void if_stmt();
+static void while_stmt();
+static void exp();
+
+static void match(TokenType expected)
+{
+	if (token == expected)
+		token = getToken();
+	else
+		fprintf(stderr, "unexpected token: %s\n", tokenString);
+}
+
+void stmt_sequence()
+{
+	statement();
+	while (token != ENDFILE){
+		match(SEMI);
+		statement();
+	}
+}
+
+void statement()
+{
+	switch(token)
+	{
+
+	}
+}
+
 void parse()
 {
 
 }
+

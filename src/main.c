@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "readprocess.h"
 #include "parse.h"
+#include "scan.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -15,6 +16,9 @@
 FILE  *source;
 int   INPUT;
 char  pwd[MAXTOKENLEN + 1];
+
+char  tokenString[MAXTOKENLEN + 1];
+char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
 int main(int argc, char *argv[])
 {
