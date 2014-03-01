@@ -74,4 +74,7 @@
    processor for execute command. Next time, I will begin to code the 
    parse of ddsh. It is the most difficult.
 
+-- Sat Mar 1, 2014
+   Finish lots parts of the parser, it occur two or more problem now, 
+   I try to fix them at next time.
 
