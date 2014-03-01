@@ -10,6 +10,7 @@
 
 #include "exec.h"
 #include "globals.h"
+#include "build_in.h"
 #include "errorprocess.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -22,36 +23,42 @@ void forktoexec()
 	int   i;                          /* index */
 	int   status;                     /* child process's status */
 	char  *arg_temp[MAXTOKENLEN + 1]; /* for arg array */
+	BuildInType command;              /* holds the build in command type */
 
-	/* fork a child to execute a program */	
-	if ((pid = fork()) < 0)
-		fprintf(stderr, "fork error...");
-	else if (pid == 0){
-		/* have parameter */
-		if (arg[1][0] != 0){
-			/*
-			 * put the parameters which in arg into arg_temp 
-			 * in order to set NULL to the end of parameters.
-			 * this way maybe stupid, but it deals with the 
-			 * problem that shit me few days.:-) 
-			 *
-			 */
-			for (i = 0; strcmp(arg[i], "#") != 0; i++)
-				arg_temp[i] = arg[i];
-			arg_temp[i] = NULL;
+	if ( (command = isbuildin(tokenString)) )
+		runbuildin(command);
+	/* not build-in commands */
+	else{
+		/* fork a child to execute a program */	
+		if ((pid = fork()) < 0)
+			fprintf(stderr, "fork error...");
+		else if (pid == 0){
+			/* have parameter */
+			if (arg[1][0] != 0){
+				/*
+				 * put the parameters which in arg into arg_temp 
+				 * in order to set NULL to the end of parameters.
+				 * this way maybe stupid, but it deals with the 
+				 * problem that shit me few days.:-) 
+				 *
+				 */
+				for (i = 0; strcmp(arg[i], "#") != 0; i++)
+					arg_temp[i] = arg[i];
+				arg_temp[i] = NULL;
 
-			execvp(tokenString, arg_temp);
+				execvp(tokenString, arg_temp);
+			}
+			else{
+				execlp(tokenString, tokenString, (char *)0);
+			}
 		}
-		else{
-			execlp(tokenString, tokenString, (char *)0);
-		}
+
+		/* error process */
+		error_process();
+
+		/* waiting for child to exit */
+		if ((pid == waitpid(pid, &status, 0)) < 0)
+			fprintf(stderr, "waitpid error...");
 	}
-
-	/* error process */
-	error_process();
-
-	/* waiting for child to exit */
-	if ((pid == waitpid(pid, &status, 0)) < 0)
-		fprintf(stderr, "waitpid error...");
 }
 

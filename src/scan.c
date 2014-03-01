@@ -145,7 +145,6 @@ TokenType getToken(void)
 		        else{ 		
 				/* parameters */
 				if (currentToken == COMMAND){
-					printf("hello\n");
 					save         = FALSE;
 					state        = INPARAM;
 					strcpy(arg[0], tokenString); /* the begin of parameters */

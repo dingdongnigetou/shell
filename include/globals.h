@@ -29,7 +29,7 @@ typedef enum{
         ASSIGN, SEMI, PIPE, DAEMON, OR, AND, RPAREN, LPAREN, NEWLINE,
 	ENDFILE, COMMAND, ERROR, PARAM, 
 	/* key words */
-	IF, THEN, ELSE, FI, WHILE, DO, DONEWHILE	
+	IF, THEN, ELSE, FI, WHILE, DO, DONEWHILE
 }TokenType;
 
 extern char  tokenString[MAXTOKENLEN + 1];          /* tokenString array stores the lexeme of each token */
