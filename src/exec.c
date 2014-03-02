@@ -59,6 +59,7 @@ void forktoexec()
 		/* waiting for child to exit */
 		if ((pid == waitpid(pid, &status, 0)) < 0)
 			fprintf(stderr, "waitpid error...");
+		return ;
 	}
 }
 

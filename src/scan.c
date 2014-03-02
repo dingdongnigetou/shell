@@ -72,7 +72,7 @@ static struct{
 	TokenType tok;
 }keywords[7] = { {"if", IF}, {"then", THEN}, {"else", ELSE},
 		  {"fi", FI}, {"while", WHILE}, {"do", DO},
-		  {"done", DONE}
+		  {"done", DONEWHILE}
 		};
 
 /* lookup the key words */
@@ -223,12 +223,13 @@ TokenType getToken(void)
 			tokenString[tokenStringIndex++] = ch;
 		if (state == DONE && (currentToken == COMMAND || currentToken == NUM) ){
 			tokenString[tokenStringIndex] = '\0';
-			currentToken = keywordLookup(tokenString);
 			if (currentToken == COMMAND)
-				strcpy(commands, tokenString);
+				currentToken = keywordLookup(tokenString);
 		}
 		
 	} /* while */	
+	if (currentToken == COMMAND)
+		strcpy(commands, tokenString);
 
 	return currentToken;
 }

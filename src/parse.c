@@ -24,7 +24,8 @@ char  commands[MAXTOKENLEN + 1];
 char  tokenString[MAXTOKENLEN + 1];
 char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
-static TokenType token;        /* holds current token */
+static TokenType token;              /* holds current token */
+static char number[MAXTOKENLEN + 1]; /*  holds number in []*/
 
 /* prototypes */
 static void stmt_sequence();
@@ -32,6 +33,13 @@ static void statement();
 static void if_stmt();
 static void while_stmt();
 static void do_command();
+
+/* get all token when syntax error happened */
+static void clearToken()
+{
+	while (token != NEWLINE)
+		token = getToken();
+}
 
 static void match(TokenType expected)
 {
@@ -62,7 +70,15 @@ void statement()
 		while_stmt();
 	        break;
 	case COMMAND: 
+		while(token != SEMI){
+			token = getToken();
+			if (token == NEWLINE)
+				break;
+		}
 		do_command();
+		break;
+	case SEMI:
+		match(SEMI);
 		break;
 	case NEWLINE:
 		match(NEWLINE);
@@ -75,46 +91,136 @@ void statement()
 
 void if_stmt()
 {
-	char number[MAXTOKENLEN + 1];
-	/*  if [ num ]; then dosometing; else dootherthing; fi */
+	/*  if [ num ]; then dosometing; fi */
 	match(IF);
-	match(LPAREN);
-	match(NUM);
-	strcpy(number, tokenString);
-	match(RPAREN);
-	match(SEMI);
-	match(THEN);
-	while(token != SEMI)
-		token = getToken();
-	match(SEMI);
-	match(FI);
-	if (atoi(number)){
-		token = COMMAND;
-		stmt_sequence();
+	if (token != LPAREN){
+		fprintf(stderr, "missing '[' behinds if\n");
+		clearToken();
+		return;
 	}
+	match(LPAREN);
+	
+	if (token != NUM){
+		fprintf(stderr, "missing number in '[]'\n");
+		clearToken();
+		return;
+	}
+	else{
+		match(NUM);
+		strcpy(number, tokenString);
+	}
+
+	if (token != RPAREN){
+		fprintf(stderr, "missing ']'\n");
+		clearToken();
+		return;
+	}	
+	match(RPAREN);
+
+	if (token != SEMI){
+		fprintf(stderr, "missing ';' behinds ']'\n");
+		clearToken();
+		return;
+	}
+	match(SEMI);
+
+	if (token != THEN){
+		fprintf(stderr, "missing 'then'\n");
+		clearToken();
+		return;
+	}
+	match(THEN);
+
+	while(token != SEMI){
+		token = getToken();
+		if (token == NEWLINE)
+			break;
+	}
+
+	if (token != SEMI){
+		fprintf(stderr, "missing ';' behinds commands\n");
+		clearToken();
+		return;
+	}
+	match(SEMI);
+
+	if (token != FI){
+		fprintf(stderr, "missing 'fi' at the end\n");
+		clearToken();
+		return;
+	}
+	match(FI);
+
+	if (atoi(number))
+		do_command();
 }
 
 void while_stmt()
 {
 	/* while [ num ]; do dosomething; done */
 	match(WHILE);
+	if (token != LPAREN){
+		fprintf(stderr, "missing '[' behinds while\n");
+		clearToken();
+		return;
+	}
 	match(LPAREN);
+
+	if (token != NUM){
+		fprintf(stderr, "missing number in '[]'\n");
+		clearToken();
+		return;
+	}
 	match(NUM);
+	strcpy(number, tokenString);
+	
+	if (token != RPAREN){
+		fprintf(stderr, "missing ']'\n");
+		clearToken();
+		return;
+	}
 	match(RPAREN);
+
+	if (token != SEMI){
+		fprintf(stderr, "missing ';' behinds ']'\n");
+		clearToken();
+		return;
+	}
 	match(SEMI);
+
+	if (token != DO){
+		fprintf(stderr, "missing 'do' behinds commands\n");
+		clearToken();
+		return;
+	}
 	match(DO);
-	while(atoi(commands))
-		stmt_sequence();
+
+	while(token != SEMI){
+		token = getToken();
+		if (token == NEWLINE)
+			break;
+	}
+
+	if (token != SEMI){
+		fprintf(stderr, "missing ';' behinds 'do'\n");
+		clearToken();
+		return;
+	}
+	match(SEMI);
+
+	if (token != DONEWHILE){
+		fprintf(stderr, "missing 'done' at the end\n");
+		clearToken();
+		return;
+	}
 	match(DONEWHILE);
+
+	while(atoi(number))
+		forktoexec();
 }
 
 void do_command()
 {
-	match(COMMAND);
-	if (token == PARAM)
-		match(PARAM);
-        else if (token == SEMI)
-		match(SEMI);
 	forktoexec();
 	CLRARG;
 }

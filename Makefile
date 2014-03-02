@@ -6,11 +6,12 @@ CFLAGS += -Wall
 CFLAGS += -I$(INCLUDE) 
 CFLAGS += -std=gnu99
 CFLAGS += -lreadline # for readline
-#CFLAGS += -O3        # release
+CFLAGS += -O3        # release
 
 SRC=./src
 OBJ=./obj
 INCLUDE=./include
+
 
 install:$(OBJ)/main.o $(OBJ)/scan.o $(OBJ)/build_in.o \
 	$(OBJ)/readprocess.o $(OBJ)/exec.o $(OBJ)/errorprocess.o \
