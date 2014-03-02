@@ -20,6 +20,7 @@ for (int i = 0; i <= MAXTOKENLEN; i++)        \
 	memset(arg + i, 0, MAXTOKENLEN + 1);
 
 /* globals variables */
+char  commands[MAXTOKENLEN + 1];
 char  tokenString[MAXTOKENLEN + 1];
 char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1];
 
@@ -74,31 +75,23 @@ void statement()
 
 void if_stmt()
 {
+	char number[MAXTOKENLEN + 1];
 	/*  if [ num ]; then dosometing; else dootherthing; fi */
 	match(IF);
-	if (token == LPAREN){
-		match(LPAREN);
-		if (token == NUM){ 
-			match(NUM);
-			if (token == RPAREN){
-				match(RPAREN);
-				if (token == SEMI){
-					match(SEMI);
-					if (token == THEN){
-						match(THEN);
-						if (atoi(tokenString))
-							stmt_sequence();
-						else{
-							if (token == ELSE)
-								match(ELSE);
-								stmt_sequence();
-						}
-					}
-				}
-			}
-		}
+	match(LPAREN);
+	match(NUM);
+	strcpy(number, tokenString);
+	match(RPAREN);
+	match(SEMI);
+	match(THEN);
+	while(token != SEMI)
+		token = getToken();
+	match(SEMI);
+	match(FI);
+	if (atoi(number)){
+		token = COMMAND;
+		stmt_sequence();
 	}
-
 }
 
 void while_stmt()
@@ -110,10 +103,9 @@ void while_stmt()
 	match(RPAREN);
 	match(SEMI);
 	match(DO);
-	if (atoi(tokenString))
+	while(atoi(commands))
 		stmt_sequence();
 	match(DONEWHILE);
-
 }
 
 void do_command()
@@ -123,8 +115,6 @@ void do_command()
 		match(PARAM);
         else if (token == SEMI)
 		match(SEMI);
-	else if (token == NEWLINE)
-		match(NEWLINE);
 	forktoexec();
 	CLRARG;
 }

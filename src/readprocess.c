@@ -17,7 +17,7 @@
 /* for read buf */
 static char *line_read = (char *)0;
 /* for commands auto-completion */
-static char *commands[] = {"login", "shutdown", "halt", "reboot", "install", "mount",
+static char *commandarray[] = {"login", "shutdown", "halt", "reboot", "install", "mount",
 		           "umount", "chsh", "exit", "last", "file", "mkdir", "grep",
                            "dd", "find", "mv", "ls", "dif", "cat", "ln", "df", "top",
                            "free", "quota", "at", "lp", "adduser", "groupadd", "kill",
@@ -54,7 +54,7 @@ char *command_generator(const char *text, int state)
 		len = strlen(text);
 	}
 
-	while ( (name = commands[list_index++]) )
+	while ( (name = commandarray[list_index++]) )
 		if (strncmp(name, text, len) == 0)
 			return strdup(name);
 

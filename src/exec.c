@@ -46,10 +46,10 @@ void forktoexec()
 					arg_temp[i] = arg[i];
 				arg_temp[i] = NULL;
 
-				execvp(tokenString, arg_temp);
+				execvp(commands, arg_temp);
 			}
 			else{
-				execlp(tokenString, tokenString, (char *)0);
+				execlp(commands, commands, (char *)0);
 			}
 		}
 

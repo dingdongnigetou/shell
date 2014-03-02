@@ -223,8 +223,9 @@ TokenType getToken(void)
 			tokenString[tokenStringIndex++] = ch;
 		if (state == DONE && (currentToken == COMMAND || currentToken == NUM) ){
 			tokenString[tokenStringIndex] = '\0';
+			currentToken = keywordLookup(tokenString);
 			if (currentToken == COMMAND)
-				currentToken = keywordLookup(tokenString);
+				strcpy(commands, tokenString);
 		}
 		
 	} /* while */	

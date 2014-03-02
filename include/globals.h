@@ -32,7 +32,8 @@ typedef enum{
 	IF, THEN, ELSE, FI, WHILE, DO, DONEWHILE
 }TokenType;
 
-extern char  tokenString[MAXTOKENLEN + 1];          /* tokenString array stores the lexeme of each token */
+extern char  tokenString[MAXTOKENLEN + 1];
+extern char  commands[MAXTOKENLEN + 1];             /* holds the commands */
 extern char  arg[MAXTOKENLEN + 1][MAXTOKENLEN + 1]; /* command's parameters */
 extern char  pwd[MAXTOKENLEN + 1];                  /* present work director */
 

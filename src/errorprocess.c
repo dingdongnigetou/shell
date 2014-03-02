@@ -18,7 +18,7 @@ void error_process()
 	{
 	case E2BIG:fprintf(stderr, "ddsh: Argument list too long\n");
 		   break;
-	case EACCES:fprintf(stderr, "ddsh: %s: Permission denied\n", tokenString);
+	case EACCES:fprintf(stderr, "ddsh: %s: Permission denied\n", commands);
 		    break;
 	case EBUSY:fprintf(stderr, "ddsh: Device or resource busy\n");
 		   break;
@@ -30,11 +30,11 @@ void error_process()
 		    break;
 	case EIO:fprintf(stderr, "ddsh: Input/output error\n");
 		 break;
-	case EISDIR:fprintf(stderr, "ddsh: %s: Is a dirextory\n", tokenString);
+	case EISDIR:fprintf(stderr, "ddsh: %s: Is a dirextory\n", commands);
 		    break;
 	case ENODEV:fprintf(stderr, "ddsh: No such device\n");
 		    break;
-	case ENOENT:fprintf(stderr, "ddsh: %s: command not found\n", tokenString);
+	case ENOENT:fprintf(stderr, "ddsh: %s: command not found\n", commands);
 		    break;
 	}
 
