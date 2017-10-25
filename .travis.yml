@@ -11,12 +11,7 @@ compiler:
 
 addons:
     apt:
-        sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.6
         packages:
-            - gcc-4.9
-            - g++-4.9
             - libreadline6 
             - libreadline6-dev
 
@@ -25,11 +20,6 @@ branches:
         - master
 
 before_install:
-    - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then
-      export CC="gcc-4.9";
-      export CXX="g++-4.9";
-      export test="finch";
-      fi
     - gcc --version
     - g++ --version
 
