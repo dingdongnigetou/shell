@@ -31,9 +31,6 @@ cache:
             - gcc --version
             - g++ --version
 
-        install:
-            - bash -x .travis/install.sh
-
         script:
             - make -j2
 
