@@ -11,6 +11,9 @@ compiler:
 
 addons:
     apt:
+        sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
         packages:
             - gcc-4.9
             - g++-4.9
