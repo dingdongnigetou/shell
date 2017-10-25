@@ -1,7 +1,7 @@
 
 | **`Linux`** |
 |--------------------|
-[![Build Status](https://travis-ci.org/dingdongnigetou/shell.svg?branch=dev)](https://travis-ci.org/dingdongnigetou/shell)
+[![Build Status](https://travis-ci.org/dingdongnigetou/shell.svg?branch=master)]
 
 
 DESCRIPTION
