@@ -9,28 +9,27 @@ os:
 compiler:
     - gcc
 
-cache:
-    addons:
-        apt:
-            packages:
-                - gcc-4.9
-                - g++-4.9
-                - libreadline6 
-                - libreadline6-dev
+addons:
+    apt:
+        packages:
+            - gcc-4.9
+            - g++-4.9
+            - libreadline6 
+            - libreadline6-dev
 
-    branches:
-        only:
-            - master
+branches:
+    only:
+        - master
 
-        before_install:
-            - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then
-              export CC="gcc-4.9";
-              export CXX="g++-4.9";
-              export test="finch";
-              fi
-            - gcc --version
-            - g++ --version
+before_install:
+    - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then
+      export CC="gcc-4.9";
+      export CXX="g++-4.9";
+      export test="finch";
+      fi
+    - gcc --version
+    - g++ --version
 
-        script:
-            - make -j2
+script:
+    - make -j2
 
