@@ -1,0 +1,40 @@
+
+sudo: required
+dist: trusty
+
+language: cpp
+
+os:
+    - linux
+
+compiler:
+    - gcc
+
+cache:
+    addons:
+        apt:
+            sources:
+                - ubuntu-toolchain-r-test
+                - llvm-toolchain-precise-3.6
+            packages:
+                - gcc-4.9
+                - g++-4.9
+
+    branches:
+        only:
+            - master
+
+        before_install:
+            - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then
+              export CC="gcc-4.9";
+              export CXX="g++-4.9";
+              fi
+            - gcc --version
+            - g++ --version
+
+        install:
+            - bash -x .travis/install.sh
+
+        script:
+            - make -j2
+
