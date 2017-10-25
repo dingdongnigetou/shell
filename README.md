@@ -38,8 +38,3 @@ INSTALLATION
   You need the library of "readline".
   Use make.
 
-
-CONTACT WITH ME
-================
-  Send message to dingdongnigetou@gmail.com
-
