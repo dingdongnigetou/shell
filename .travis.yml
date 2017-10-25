@@ -26,6 +26,7 @@ cache:
             - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then
               export CC="gcc-4.9";
               export CXX="g++-4.9";
+              export test="finch";
               fi
             - gcc --version
             - g++ --version
