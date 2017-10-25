@@ -5,7 +5,6 @@ CC=gcc
 CFLAGS += -Wall
 CFLAGS += -I$(INCLUDE) 
 CFLAGS += -std=gnu99
-CFLAGS += -lreadline # for readline
 CFLAGS += -O3        # release
 
 SRC=./src
@@ -16,7 +15,7 @@ INCLUDE=./include
 install:$(OBJ)/main.o $(OBJ)/scan.o $(OBJ)/build_in.o \
 	$(OBJ)/readprocess.o $(OBJ)/exec.o $(OBJ)/errorprocess.o \
 	$(OBJ)/parse.o
-	$(CC) $(CFLAGS) $^ -o ddsh
+	$(CC) $(CFLAGS) $^ -lreadline -o ddsh
 
 $(OBJ)/main.o:$(SRC)/main.c
 	mkdir -p obj
@@ -29,7 +28,7 @@ $(OBJ)/build_in.o:$(SRC)/build_in.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ)/readprocess.o:$(SRC)/readprocess.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@ 
 
 $(OBJ)/exec.o:$(SRC)/exec.c
 	$(CC) $(CFLAGS) -c $< -o $@
